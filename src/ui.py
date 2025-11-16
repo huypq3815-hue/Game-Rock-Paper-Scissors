@@ -20,10 +20,34 @@ class GameUI(ctk.CTk):
         self.opponent_choice: Optional[Choice] = None
         self.opponent_ready = False
         
-        # Configure window
-        self.title("Rock Paper Scissors")
+        # Retro color scheme
+        self.retro_colors = {
+            "bg": "#0a0a0a",  # Very dark background
+            "fg": "#00ff41",  # Neon green (Matrix style)
+            "accent": "#ffaa00",  # Neon orange
+            "accent2": "#00ffff",  # Cyan
+            "accent3": "#ff00ff",  # Magenta
+            "text": "#00ff41",  # Neon green text
+            "text_secondary": "#ffff00",  # Yellow
+            "button": "#00ff41",  # Neon green buttons
+            "button_hover": "#00cc33",  # Darker green
+            "button_danger": "#ff3333",  # Red
+            "button_danger_hover": "#cc0000",
+            "frame": "#1a1a1a",  # Dark frame
+            "border": "#00ff41",  # Neon border
+            "error": "#ff3333"  # Error red
+        }
+        
+        # Retro font
+        self.retro_font = ("Courier New", 14, "bold")
+        self.retro_font_large = ("Courier New", 24, "bold")
+        self.retro_font_xlarge = ("Courier New", 32, "bold")
+        
+        # Configure window with retro theme
+        self.title("Rock Paper Scissors - RETRO")
         self.geometry("800x600")
         self.minsize(800, 600)
+        self.configure(bg=self.retro_colors["bg"])
         
         # Initialize sounds
         self.load_sounds()
@@ -59,6 +83,58 @@ class GameUI(ctk.CTk):
         except Exception as e:
             print(f"Error loading images: {e}")
     
+    def create_synthetic_sound(self, sound_type: str):
+        """Create a synthetic sound effect if file doesn't exist"""
+        try:
+            import numpy as np
+            import wave
+            import io
+            
+            sample_rate = 22050
+            duration = 0.1 if sound_type == "click" else 0.5
+            
+            if sound_type == "click":
+                # Short beep for click
+                frequency = 800
+                t = np.linspace(0, duration, int(sample_rate * duration))
+                wave_data = np.sin(2 * np.pi * frequency * t) * 0.3
+                # Add fade out
+                fade_samples = int(sample_rate * 0.05)
+                wave_data[-fade_samples:] *= np.linspace(1, 0, fade_samples)
+            elif sound_type == "win":
+                # Rising tone for win
+                t = np.linspace(0, duration, int(sample_rate * duration))
+                frequency = np.linspace(400, 800, len(t))
+                wave_data = np.sin(2 * np.pi * frequency * t) * 0.3
+            elif sound_type == "lose":
+                # Falling tone for lose
+                t = np.linspace(0, duration, int(sample_rate * duration))
+                frequency = np.linspace(600, 200, len(t))
+                wave_data = np.sin(2 * np.pi * frequency * t) * 0.3
+            elif sound_type == "draw":
+                # Neutral tone for draw
+                t = np.linspace(0, duration, int(sample_rate * duration))
+                wave_data = np.sin(2 * np.pi * 400 * t) * 0.2
+            else:
+                return None
+            
+            # Convert to 16-bit integer
+            wave_data = (wave_data * 32767).astype(np.int16)
+            
+            # Create WAV file in memory
+            wav_buffer = io.BytesIO()
+            with wave.open(wav_buffer, 'wb') as wav_file:
+                wav_file.setnchannels(1)  # Mono
+                wav_file.setsampwidth(2)  # 16-bit
+                wav_file.setframerate(sample_rate)
+                wav_file.writeframes(wave_data.tobytes())
+            
+            wav_buffer.seek(0)
+            return pygame.mixer.Sound(wav_buffer)
+        except Exception as e:
+            print(f"Error creating synthetic sound {sound_type}: {e}")
+            return None
+    
     def load_sounds(self):
         """Load all required sound effects"""
         try:
@@ -72,7 +148,20 @@ class GameUI(ctk.CTk):
             for sound_name, filename in sound_files.items():
                 sound_path = os.path.join("assets", "sounds", filename)
                 if os.path.exists(sound_path):
-                    self.sounds[sound_name] = pygame.mixer.Sound(sound_path)
+                    try:
+                        self.sounds[sound_name] = pygame.mixer.Sound(sound_path)
+                    except Exception as e:
+                        print(f"Error loading {filename}: {e}")
+                        # Try to create synthetic sound
+                        synthetic = self.create_synthetic_sound(sound_name)
+                        if synthetic:
+                            self.sounds[sound_name] = synthetic
+                else:
+                    # Create synthetic sound if file doesn't exist
+                    synthetic = self.create_synthetic_sound(sound_name)
+                    if synthetic:
+                        self.sounds[sound_name] = synthetic
+                        print(f"Created synthetic sound for {sound_name}")
         except Exception as e:
             print(f"Error loading sounds: {e}")
     
@@ -84,11 +173,52 @@ class GameUI(ctk.CTk):
             except:
                 pass
     
+    def create_retro_label(self, parent, text, font=None, text_color=None, **kwargs):
+        """Create a retro-styled label"""
+        if font is None:
+            font = self.retro_font
+        if text_color is None:
+            text_color = self.retro_colors["text"]
+        return ctk.CTkLabel(
+            parent,
+            text=text,
+            font=font,
+            text_color=text_color,
+            **kwargs
+        )
+    
+    def create_retro_button(self, parent, text, command, fg_color=None, hover_color=None, 
+                           text_color="#000000", border_color=None, **kwargs):
+        """Create a retro-styled button"""
+        if fg_color is None:
+            fg_color = self.retro_colors["button"]
+        if hover_color is None:
+            hover_color = self.retro_colors["button_hover"]
+        if border_color is None:
+            border_color = self.retro_colors["border"]
+        return ctk.CTkButton(
+            parent,
+            text=text,
+            font=self.retro_font,
+            fg_color=fg_color,
+            hover_color=hover_color,
+            text_color=text_color,
+            border_color=border_color,
+            border_width=2,
+            command=command,
+            **kwargs
+        )
+    
     def clear_frame(self):
         """Clear the current frame"""
         if self.current_frame:
             self.current_frame.destroy()
-        self.current_frame = ctk.CTkFrame(self)
+        self.current_frame = ctk.CTkFrame(
+            self,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         self.current_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
         self.current_frame.grid_columnconfigure(0, weight=1)
         self.current_frame.grid_rowconfigure(0, weight=1)
@@ -104,8 +234,9 @@ class GameUI(ctk.CTk):
         else:
             title = ctk.CTkLabel(
                 self.current_frame,
-                text="Rock Paper Scissors",
-                font=("Arial", 32, "bold")
+                text=">>> ROCK PAPER SCISSORS <<<",
+                font=self.retro_font_xlarge,
+                text_color=self.retro_colors["text"]
             )
             title.pack(pady=(0, 40))
         
@@ -113,8 +244,21 @@ class GameUI(ctk.CTk):
         name_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         name_frame.pack(pady=(0, 20))
         
-        ctk.CTkLabel(name_frame, text="Your name:", font=("Arial", 14)).pack(side="left", padx=(0, 10))
-        self.player_name = ctk.CTkEntry(name_frame, width=200, placeholder_text="Player")
+        ctk.CTkLabel(
+            name_frame,
+            text="> YOUR NAME:",
+            font=self.retro_font,
+            text_color=self.retro_colors["text"]
+        ).pack(side="left", padx=(0, 10))
+        self.player_name = ctk.CTkEntry(
+            name_frame,
+            width=200,
+            placeholder_text="PLAYER",
+            font=self.retro_font,
+            fg_color=self.retro_colors["bg"],
+            border_color=self.retro_colors["border"],
+            text_color=self.retro_colors["text"]
+        )
         self.player_name.pack(side="left")
         
         # Game mode buttons
@@ -123,36 +267,56 @@ class GameUI(ctk.CTk):
         
         vs_ai_btn = ctk.CTkButton(
             button_frame,
-            text="Play vs AI",
-            font=("Arial", 16, "bold"),
+            text="> PLAY VS AI",
+            font=self.retro_font_large,
             height=50,
+            fg_color=self.retro_colors["button"],
+            hover_color=self.retro_colors["button_hover"],
+            text_color="#000000",
+            border_color=self.retro_colors["border"],
+            border_width=2,
             command=lambda: self.start_game(GameMode.VS_AI)
         )
         vs_ai_btn.pack(fill="x", pady=10, padx=100)
         
         vs_local_btn = ctk.CTkButton(
             button_frame,
-            text="Play Local (2 Players)",
-            font=("Arial", 16, "bold"),
+            text="> PLAY LOCAL (2 PLAYERS)",
+            font=self.retro_font_large, 
             height=50,
-            command=lambda: self.show_local_2player_menu()
+            fg_color=self.retro_colors["button"],
+            hover_color=self.retro_colors["button_hover"],
+            text_color="#000000",
+            border_color=self.retro_colors["border"],
+            border_width=2,
+            command=lambda: [self.play_sound("click"), self.show_local_2player_menu()]
         )
         vs_local_btn.pack(fill="x", pady=10, padx=100)
         
         vs_player_btn = ctk.CTkButton(
             button_frame,
-            text="Play Online",
-            font=("Arial", 16, "bold"),
+            text="> PLAY ONLINE",
+            font=self.retro_font_large,
             height=50,
-            command=lambda: self.show_online_menu()
+            fg_color=self.retro_colors["accent"],
+            hover_color="#ff8800",
+            text_color="#000000",
+            border_color=self.retro_colors["accent"],
+            border_width=2,
+            command=lambda: [self.play_sound("click"), self.show_online_menu()]
         )
         vs_player_btn.pack(fill="x", pady=10, padx=100)
         
         ai_vs_ai_btn = ctk.CTkButton(
             button_frame,
-            text="Watch AI vs AI",
-            font=("Arial", 16, "bold"),
+            text="> WATCH AI VS AI",
+            font=self.retro_font_large,
             height=50,
+            fg_color=self.retro_colors["accent2"],
+            hover_color="#00cccc",
+            text_color="#000000",
+            border_color=self.retro_colors["accent2"],
+            border_width=2,
             command=lambda: self.start_game(GameMode.AI_VS_AI)
         )
         ai_vs_ai_btn.pack(fill="x", pady=10, padx=100)
@@ -160,12 +324,15 @@ class GameUI(ctk.CTk):
         # Exit button
         exit_btn = ctk.CTkButton(
             button_frame,
-            text="Exit",
-            font=("Arial", 14),
-            fg_color="#FF5555",
-            hover_color="#FF3333",
+            text="> EXIT",
+            font=self.retro_font,
+            fg_color=self.retro_colors["button_danger"],
+            hover_color=self.retro_colors["button_danger_hover"],
             height=40,
-            command=self.quit
+            text_color="#FFFFFF",
+            border_color=self.retro_colors["button_danger"],
+            border_width=2,
+            command=lambda: [self.play_sound("click"), self.quit()]
         )
         exit_btn.pack(fill="x", pady=(20, 0), padx=100)
     
@@ -173,10 +340,10 @@ class GameUI(ctk.CTk):
         """Show the local 2-player setup menu"""
         self.clear_frame()
         
-        title = ctk.CTkLabel(
+        title = self.create_retro_label(
             self.current_frame,
-            text="Local 2-Player Game",
-            font=("Arial", 24, "bold")
+            text=">>> LOCAL 2-PLAYER GAME <<<",
+            font=self.retro_font_xlarge
         )
         title.pack(pady=(0, 30))
         
@@ -184,41 +351,55 @@ class GameUI(ctk.CTk):
         player1_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         player1_frame.pack(fill="x", pady=10, padx=100)
         
-        ctk.CTkLabel(player1_frame, text="Player 1 Name:", font=("Arial", 14)).pack(side="left", padx=(0, 10))
-        self.player1_local_name = ctk.CTkEntry(player1_frame, width=200, placeholder_text="Player 1")
+        self.create_retro_label(player1_frame, text="> PLAYER 1 NAME:",).pack(side="left", padx=(0, 10))
+        self.player1_local_name = ctk.CTkEntry(
+            player1_frame,
+            width=200,
+            placeholder_text="PLAYER 1",
+            font=self.retro_font,
+            fg_color=self.retro_colors["bg"],
+            border_color=self.retro_colors["border"],
+            text_color=self.retro_colors["text"]
+        )
         self.player1_local_name.pack(side="left")
         
         # Player 2 name
         player2_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         player2_frame.pack(fill="x", pady=10, padx=100)
         
-        ctk.CTkLabel(player2_frame, text="Player 2 Name:", font=("Arial", 14)).pack(side="left", padx=(0, 10))
-        self.player2_local_name = ctk.CTkEntry(player2_frame, width=200, placeholder_text="Player 2")
+        self.create_retro_label(player2_frame, text="> PLAYER 2 NAME:",).pack(side="left", padx=(0, 10))
+        self.player2_local_name = ctk.CTkEntry(
+            player2_frame,
+            width=200,
+            placeholder_text="PLAYER 2",
+            font=self.retro_font,
+            fg_color=self.retro_colors["bg"],
+            border_color=self.retro_colors["border"],
+            text_color=self.retro_colors["text"]
+        )
         self.player2_local_name.pack(side="left")
         
         # Start button
-        start_btn = ctk.CTkButton(
+        start_btn = self.create_retro_button(
             self.current_frame,
-            text="Start Game",
-            font=("Arial", 16, "bold"),
-            height=50,
-            command=self.start_local_2player_game
+            text="> START GAME",
+            command=self.start_local_2player_game,
+            font=self.retro_font_large,
+            height=50
         )
         start_btn.pack(fill="x", pady=20, padx=100)
         
         # Back button
-        back_btn = ctk.CTkButton(
+        back_btn = self.create_retro_button(
             self.current_frame,
-            text="Back to Main Menu",
-            font=("Arial", 14),
-            height=40,
-            command=self.show_main_menu
+            text="> BACK TO MAIN MENU",
+            command=lambda: [self.play_sound("click"), self.show_main_menu()],
+            height=40
         )
         back_btn.pack(pady=(10, 0))
     
     def start_local_2player_game(self):
         """Start a local 2-player game"""
-        self.play_sound("click")
         self.game.set_game_mode(GameMode.VS_LOCAL_PLAYER)
         player1_name = self.player1_local_name.get() or "Player 1"
         player2_name = self.player2_local_name.get() or "Player 2"
@@ -229,20 +410,21 @@ class GameUI(ctk.CTk):
         """Show the online game menu"""
         self.clear_frame()
         
-        title = ctk.CTkLabel(
+        title = self.create_retro_label(
             self.current_frame,
-            text="Online Game",
-            font=("Arial", 24, "bold")
+            text=">>> ONLINE GAME <<<",
+            font=self.retro_font_xlarge
         )
         title.pack(pady=(0, 30))
         
         # Create room button
-        create_btn = ctk.CTkButton(
+        create_btn = self.create_retro_button(
             self.current_frame,
-            text="Create Room",
-            font=("Arial", 16, "bold"),
+            text="> CREATE ROOM",
+            command=self.create_room,
+            font=self.retro_font_large,
             height=50,
-            command=self.create_room
+            fg_color=self.retro_colors["accent"]
         )
         create_btn.pack(fill="x", pady=10, padx=100)
         
@@ -252,34 +434,33 @@ class GameUI(ctk.CTk):
         
         self.room_code = ctk.CTkEntry(
             join_frame,
-            placeholder_text="Enter Room Code",
-            font=("Arial", 14)
+            placeholder_text="ENTER ROOM CODE",
+            font=self.retro_font,
+            fg_color=self.retro_colors["bg"],
+            border_color=self.retro_colors["border"],
+            text_color=self.retro_colors["text"]
         )
         self.room_code.pack(side="left", expand=True, fill="x", padx=(0, 10))
         
-        join_btn = ctk.CTkButton(
+        join_btn = self.create_retro_button(
             join_frame,
-            text="Join",
-            font=("Arial", 14, "bold"),
-            width=80,
-            command=self.join_room
+            text="> JOIN",
+            command=self.join_room,
+            width=80
         )
         join_btn.pack(side="right")
         
         # Back button
-        back_btn = ctk.CTkButton(
+        back_btn = self.create_retro_button(
             self.current_frame,
-            text="Back to Main Menu",
-            font=("Arial", 14),
-            height=40,
-            command=self.show_main_menu
+            text="> BACK TO MAIN MENU",
+            command=lambda: [self.play_sound("click"), self.show_main_menu()],
+            height=40
         )
         back_btn.pack(pady=(30, 0))
     
     def create_room(self):
         """Create a new online game room"""
-        self.play_sound("click")
-        
         # Initialize network manager
         self.network_manager = NetworkManager()
         
@@ -343,22 +524,24 @@ class GameUI(ctk.CTk):
     def _show_error(self, error_message: str):
         """Show error dialog"""
         dialog = ctk.CTkToplevel(self)
-        dialog.title("Error")
+        dialog.title("ERROR")
         dialog.geometry("400x150")
+        dialog.configure(bg=self.retro_colors["bg"])
         dialog.grab_set()
         
-        label = ctk.CTkLabel(
+        label = self.create_retro_label(
             dialog,
-            text=error_message,
-            font=("Arial", 14),
-            text_color="#FF6B6B"
+            text=f">>> ERROR <<<\n{error_message}",
+            text_color=self.retro_colors["error"]
         )
         label.pack(pady=20, padx=20)
         
-        btn = ctk.CTkButton(
+        btn = self.create_retro_button(
             dialog,
-            text="OK",
-            command=dialog.destroy
+            text="> OK",
+            command=lambda: [self.play_sound("click"), dialog.destroy()],
+            fg_color=self.retro_colors["button_danger"],
+            text_color="#FFFFFF"
         )
         btn.pack(pady=10)
     
@@ -371,7 +554,13 @@ class GameUI(ctk.CTk):
         self.current_frame.grid_rowconfigure(1, weight=1)
         
         # Header with scores
-        header = ctk.CTkFrame(self.current_frame, height=60)
+        header = ctk.CTkFrame(
+            self.current_frame,
+            height=60,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         header.grid(row=0, column=0, sticky="ew", pady=(0, 20))
         header.grid_columnconfigure((0, 1, 2), weight=1)
         
@@ -379,16 +568,16 @@ class GameUI(ctk.CTk):
         player1_frame = ctk.CTkFrame(header, fg_color="transparent")
         player1_frame.grid(row=0, column=0, sticky="w", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player1_frame,
-            text=self.game.player1_name,
-            font=("Arial", 16, "bold")
+            text=f"> {self.game.player1_name.upper()}",
+            font=self.retro_font
         ).pack()
         
-        self.player1_score_label = ctk.CTkLabel(
+        self.player1_score_label = self.create_retro_label(
             player1_frame,
-            text=f"Score: {self.game.player1_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player1_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player1_score_label.pack()
         
@@ -396,10 +585,11 @@ class GameUI(ctk.CTk):
         round_frame = ctk.CTkFrame(header, fg_color="transparent")
         round_frame.grid(row=0, column=1)
         
-        self.round_label = ctk.CTkLabel(
+        self.round_label = self.create_retro_label(
             round_frame,
-            text=f"Round {self.game.round}",
-            font=("Arial", 18, "bold")
+            text=f">>> ROUND {self.game.round} <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["accent"]
         )
         self.round_label.pack()
         
@@ -407,21 +597,26 @@ class GameUI(ctk.CTk):
         player2_frame = ctk.CTkFrame(header, fg_color="transparent")
         player2_frame.grid(row=0, column=2, sticky="e", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player2_frame,
-            text=self.game.player2_name,
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player2_name.upper()} <",
+            font=self.retro_font
         ).pack()
         
-        self.player2_score_label = ctk.CTkLabel(
+        self.player2_score_label = self.create_retro_label(
             player2_frame,
-            text=f"Score: {self.game.player2_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player2_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player2_score_label.pack()
         
         # Game area
-        game_area = ctk.CTkFrame(self.current_frame)
+        game_area = ctk.CTkFrame(
+            self.current_frame,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         game_area.grid(row=1, column=0, sticky="nsew")
         game_area.grid_columnconfigure((0, 1, 2), weight=1)
         game_area.grid_rowconfigure(1, weight=1)
@@ -442,19 +637,19 @@ class GameUI(ctk.CTk):
         player_name = self.game.player1_name if player_num == 1 else self.game.player2_name
         
         # Title
-        title = ctk.CTkLabel(
+        title = self.create_retro_label(
             game_area,
-            text=f"{player_name}'s Turn",
-            font=("Arial", 24, "bold"),
-            text_color="#FFD700"
+            text=f">>> {player_name.upper()}'S TURN <<<",
+            font=self.retro_font_xlarge,
+            text_color=self.retro_colors["accent"]
         )
         title.grid(row=0, column=0, columnspan=3, pady=(20, 10))
         
         # Instruction
-        instruction = ctk.CTkLabel(
+        instruction = self.create_retro_label(
             game_area,
-            text="Choose your move:",
-            font=("Arial", 16)
+            text="> CHOOSE YOUR MOVE:",
+            font=self.retro_font_large
         )
         instruction.grid(row=1, column=0, columnspan=3, pady=(0, 20))
         
@@ -462,23 +657,24 @@ class GameUI(ctk.CTk):
         buttons_frame = ctk.CTkFrame(game_area, fg_color="transparent")
         buttons_frame.grid(row=2, column=0, columnspan=3, pady=20)
         
+        choice_colors = [self.retro_colors["button"], self.retro_colors["accent"], self.retro_colors["accent2"]]
         for i, choice in enumerate(["rock", "paper", "scissors"]):
-            btn = ctk.CTkButton(
+            btn = self.create_retro_button(
                 buttons_frame,
-                text=choice.capitalize(),
-                font=("Arial", 14, "bold"),
+                text=f"> {choice.upper()}",
+                command=lambda c=choice, p=player_num: self.local_player_choice(c, p),
                 width=120,
                 height=40,
-                command=lambda c=choice, p=player_num: self.local_player_choice(c, p)
+                fg_color=choice_colors[i]
             )
             btn.grid(row=0, column=i, padx=10)
         
         # Warning message (don't let other player see)
-        warning = ctk.CTkLabel(
+        warning = self.create_retro_label(
             game_area,
-            text="⚠️ Other player should not look at the screen!",
-            font=("Arial", 12),
-            text_color="#FF6B6B"
+            text=">>> WARNING: OTHER PLAYER SHOULD NOT LOOK! <<<",
+            font=self.retro_font,
+            text_color=self.retro_colors["error"]
         )
         warning.grid(row=3, column=0, columnspan=3, pady=(20, 0))
     
@@ -499,32 +695,38 @@ class GameUI(ctk.CTk):
         """Show waiting screen between players"""
         self.clear_frame()
         
-        waiting = ctk.CTkLabel(
+        waiting = self.create_retro_label(
             self.current_frame,
-            text="Player 1's choice has been saved!",
-            font=("Arial", 20, "bold")
+            text=">>> PLAYER 1'S CHOICE SAVED! <<<",
+            font=self.retro_font_xlarge,
+            text_color=self.retro_colors["accent"]
         )
         waiting.pack(pady=(50, 20))
         
-        instruction = ctk.CTkLabel(
+        instruction = self.create_retro_label(
             self.current_frame,
-            text="Give the computer to Player 2 and click Ready",
-            font=("Arial", 16)
+            text="> GIVE COMPUTER TO PLAYER 2 AND CLICK READY",
+            font=self.retro_font_large
         )
         instruction.pack(pady=20)
         
         # Get the game area frame to pass to show_local_player_input
-        game_area = ctk.CTkFrame(self.current_frame)
+        game_area = ctk.CTkFrame(
+            self.current_frame,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         game_area.pack(expand=True, fill="both", padx=20, pady=20)
         game_area.grid_columnconfigure((0, 1, 2), weight=1)
         game_area.grid_rowconfigure(1, weight=1)
         
-        ready_btn = ctk.CTkButton(
+        ready_btn = self.create_retro_button(
             self.current_frame,
-            text="Ready - Show Player 2 Input",
-            font=("Arial", 16, "bold"),
-            height=50,
-            command=lambda: self.show_local_player_input(2, game_area)
+            text="> READY - SHOW PLAYER 2 INPUT",
+            command=lambda: [self.play_sound("click"), self.show_local_player_input(2, game_area)],
+            font=self.retro_font_large,
+            height=50
         )
         ready_btn.pack(pady=20, padx=100, fill="x")
     
@@ -542,7 +744,13 @@ class GameUI(ctk.CTk):
         self.current_frame.grid_rowconfigure(1, weight=1)
         
         # Header with scores
-        header = ctk.CTkFrame(self.current_frame, height=60)
+        header = ctk.CTkFrame(
+            self.current_frame,
+            height=60,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         header.grid(row=0, column=0, sticky="ew", pady=(0, 20))
         header.grid_columnconfigure((0, 1, 2), weight=1)
         
@@ -550,46 +758,52 @@ class GameUI(ctk.CTk):
         player1_frame = ctk.CTkFrame(header, fg_color="transparent")
         player1_frame.grid(row=0, column=0, sticky="w", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player1_frame,
-            text=self.game.player1_name,
-            font=("Arial", 16, "bold")
+            text=f"> {self.game.player1_name.upper()}",
+            font=self.retro_font
         ).pack()
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player1_frame,
-            text=f"Score: {self.game.player1_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player1_score}",
+            text_color=self.retro_colors["text_secondary"]
         ).pack()
         
         # Round info
         round_frame = ctk.CTkFrame(header, fg_color="transparent")
         round_frame.grid(row=0, column=1)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             round_frame,
-            text=f"Round {self.game.round - 1}",
-            font=("Arial", 18, "bold")
+            text=f">>> ROUND {self.game.round - 1} <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["accent"]
         ).pack()
         
         # Player 2 info
         player2_frame = ctk.CTkFrame(header, fg_color="transparent")
         player2_frame.grid(row=0, column=2, sticky="e", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player2_frame,
-            text=self.game.player2_name,
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player2_name.upper()} <",
+            font=self.retro_font
         ).pack()
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player2_frame,
-            text=f"Score: {self.game.player2_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player2_score}",
+            text_color=self.retro_colors["text_secondary"]
         ).pack()
         
         # Result area
-        result_area = ctk.CTkFrame(self.current_frame)
+        result_area = ctk.CTkFrame(
+            self.current_frame,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         result_area.grid(row=1, column=0, sticky="nsew")
         result_area.grid_columnconfigure((0, 1, 2), weight=1)
         result_area.grid_rowconfigure(1, weight=1)
@@ -598,30 +812,31 @@ class GameUI(ctk.CTk):
         choices_frame = ctk.CTkFrame(result_area, fg_color="transparent")
         choices_frame.grid(row=0, column=0, columnspan=3, pady=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             choices_frame,
-            text=f"{self.game.player1_name}: {self.game.player1_choice.value.upper()}",
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player1_name.upper()}: {self.game.player1_choice.value.upper()}",
+            font=self.retro_font
         ).pack(side="left", padx=40)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             choices_frame,
-            text="vs",
-            font=("Arial", 16, "bold")
+            text="VS",
+            font=self.retro_font,
+            text_color=self.retro_colors["accent"]
         ).pack(side="left", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             choices_frame,
-            text=f"{self.game.player2_choice.value.upper()}: {self.game.player2_name}",
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player2_choice.value.upper()}: {self.game.player2_name.upper()}",
+            font=self.retro_font
         ).pack(side="left", padx=40)
         
         # Result message
-        result_label = ctk.CTkLabel(
+        result_label = self.create_retro_label(
             result_area,
-            text=message,
-            font=("Arial", 20, "bold"),
-            text_color="#FFD700"
+            text=f">>> {message.upper()} <<<",
+            font=self.retro_font_xlarge,
+            text_color=self.retro_colors["accent"]
         )
         result_label.grid(row=1, column=0, columnspan=3, pady=40)
         
@@ -637,102 +852,40 @@ class GameUI(ctk.CTk):
         button_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         button_frame.grid(row=2, column=0, pady=(20, 0))
         
-        next_btn = ctk.CTkButton(
+        next_btn = self.create_retro_button(
             button_frame,
-            text="Next Round",
-            font=("Arial", 14),
+            text="> NEXT ROUND",
+            command=lambda: [self.play_sound("click"), self.show_local_2player_game_screen()],
             width=120,
-            height=40,
-            command=self.show_local_2player_game_screen
+            height=40
         )
         next_btn.pack(side="left", padx=10)
         
-        menu_btn = ctk.CTkButton(
+        menu_btn = self.create_retro_button(
             button_frame,
-            text="Main Menu",
-            font=("Arial", 14),
+            text="> MAIN MENU",
+            command=lambda: [self.play_sound("click"), self.show_main_menu()],
             width=120,
-            height=40,
-            command=self.show_main_menu
+            height=40
         )
         menu_btn.pack(side="left", padx=10)
-    
-    def join_room(self):
-        """Join an existing game room"""
-        room_code = self.room_code.get().strip()
-        if not room_code:
-            self._show_error("Please enter a room code")
-            return
-            
-        self.play_sound("click")
-        
-        # Initialize network manager
-        self.network_manager = NetworkManager()
-        
-        # Set up message handlers
-        self.network_manager.set_message_handler(
-            NetworkMessageType.PLAYER_CHOICE,
-            self._handle_opponent_choice
-        )
-        
-        # Try to join
-        if self.network_manager.join_room(room_code):
-            self.game.set_game_mode(GameMode.VS_PLAYER)
-            self.game.set_player_names(
-                self.player_name.get() or "Player 2",
-                "Opponent"
-            )
-            self.show_online_game_screen()
-        else:
-            self._show_error("Failed to connect to room. Check the room code and try again.")
-    
-    def _handle_opponent_choice(self, message: Dict[str, Any]):
-        """Handle opponent's choice received over network"""
-        try:
-            choice_str = message.get("data", {}).get("choice")
-            if choice_str:
-                self.opponent_choice = Choice(choice_str)
-                self.opponent_ready = True
-        except Exception as e:
-            print(f"Error handling opponent choice: {e}")
-    
-    def _show_error(self, error_message: str):
-        """Show error dialog"""
-        dialog = ctk.CTkToplevel(self)
-        dialog.title("Error")
-        dialog.geometry("400x150")
-        dialog.grab_set()
-        
-        label = ctk.CTkLabel(
-            dialog,
-            text=error_message,
-            font=("Arial", 14),
-            text_color="#FF6B6B"
-        )
-        label.pack(pady=20, padx=20)
-        
-        btn = ctk.CTkButton(
-            dialog,
-            text="OK",
-            command=dialog.destroy
-        )
-        btn.pack(pady=10)
     
     def show_waiting_for_opponent(self, room_code: str):
         """Show waiting screen for opponent to join"""
         self.clear_frame()
         
-        title = ctk.CTkLabel(
+        title = self.create_retro_label(
             self.current_frame,
-            text="Waiting for Opponent",
-            font=("Arial", 24, "bold")
+            text=">>> WAITING FOR OPPONENT <<<",
+            font=self.retro_font_xlarge,
+            text_color=self.retro_colors["accent"]
         )
         title.pack(pady=(50, 30))
         
-        info_label = ctk.CTkLabel(
+        info_label = self.create_retro_label(
             self.current_frame,
-            text="Share this room code with your opponent:",
-            font=("Arial", 14)
+            text="> SHARE THIS ROOM CODE WITH YOUR OPPONENT:",
+            font=self.retro_font
         )
         info_label.pack(pady=(0, 10))
         
@@ -740,41 +893,39 @@ class GameUI(ctk.CTk):
         code_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         code_frame.pack(pady=20)
         
-        code_label = ctk.CTkLabel(
+        code_label = self.create_retro_label(
             code_frame,
-            text=room_code,
-            font=("Arial", 18, "bold"),
-            text_color="#FFD700"
+            text=f">>> {room_code} <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["accent"]
         )
         code_label.pack(side="left", padx=(0, 10))
         
-        copy_btn = ctk.CTkButton(
+        copy_btn = self.create_retro_button(
             code_frame,
-            text="Copy",
-            font=("Arial", 12),
-            width=80,
-            command=lambda: self.copy_to_clipboard(room_code)
+            text="> COPY",
+            command=lambda: self.copy_to_clipboard(room_code),
+            width=80
         )
         copy_btn.pack(side="left")
         
         # Waiting indicator
-        waiting_label = ctk.CTkLabel(
+        waiting_label = self.create_retro_label(
             self.current_frame,
-            text="⏳ Waiting...",
-            font=("Arial", 14),
-            text_color="#FFD700"
+            text=">>> WAITING... <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["text_secondary"]
         )
         waiting_label.pack(pady=(30, 0))
         
         # Cancel button
-        cancel_btn = ctk.CTkButton(
+        cancel_btn = self.create_retro_button(
             self.current_frame,
-            text="Cancel",
-            font=("Arial", 14),
+            text="> CANCEL",
+            command=self.cancel_online_game,
             height=40,
-            fg_color="#FF5555",
-            hover_color="#FF3333",
-            command=self.cancel_online_game
+            fg_color=self.retro_colors["button_danger"],
+            text_color="#FFFFFF"
         )
         cancel_btn.pack(pady=(30, 0), padx=100, fill="x")
     
@@ -793,7 +944,13 @@ class GameUI(ctk.CTk):
         self.current_frame.grid_rowconfigure(1, weight=1)
         
         # Header with scores
-        header = ctk.CTkFrame(self.current_frame, height=60)
+        header = ctk.CTkFrame(
+            self.current_frame,
+            height=60,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         header.grid(row=0, column=0, sticky="ew", pady=(0, 20))
         header.grid_columnconfigure((0, 1, 2), weight=1)
         
@@ -801,16 +958,16 @@ class GameUI(ctk.CTk):
         player1_frame = ctk.CTkFrame(header, fg_color="transparent")
         player1_frame.grid(row=0, column=0, sticky="w", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player1_frame,
-            text=self.game.player1_name,
-            font=("Arial", 16, "bold")
+            text=f"> {self.game.player1_name.upper()}",
+            font=self.retro_font
         ).pack()
         
-        self.player1_score_label = ctk.CTkLabel(
+        self.player1_score_label = self.create_retro_label(
             player1_frame,
-            text=f"Score: {self.game.player1_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player1_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player1_score_label.pack()
         
@@ -818,10 +975,11 @@ class GameUI(ctk.CTk):
         round_frame = ctk.CTkFrame(header, fg_color="transparent")
         round_frame.grid(row=0, column=1)
         
-        self.round_label = ctk.CTkLabel(
+        self.round_label = self.create_retro_label(
             round_frame,
-            text=f"Round {self.game.round}",
-            font=("Arial", 18, "bold")
+            text=f">>> ROUND {self.game.round} <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["accent"]
         )
         self.round_label.pack()
         
@@ -829,21 +987,26 @@ class GameUI(ctk.CTk):
         player2_frame = ctk.CTkFrame(header, fg_color="transparent")
         player2_frame.grid(row=0, column=2, sticky="e", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player2_frame,
-            text=self.game.player2_name,
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player2_name.upper()} <",
+            font=self.retro_font
         ).pack()
         
-        self.player2_score_label = ctk.CTkLabel(
+        self.player2_score_label = self.create_retro_label(
             player2_frame,
-            text=f"Score: {self.game.player2_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player2_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player2_score_label.pack()
         
         # Game area
-        game_area = ctk.CTkFrame(self.current_frame)
+        game_area = ctk.CTkFrame(
+            self.current_frame,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         game_area.grid(row=1, column=0, sticky="nsew")
         game_area.grid_columnconfigure((0, 1, 2), weight=1)
         game_area.grid_rowconfigure(1, weight=1)
@@ -852,24 +1015,25 @@ class GameUI(ctk.CTk):
         choices_frame = ctk.CTkFrame(game_area, fg_color="transparent")
         choices_frame.grid(row=0, column=0, columnspan=3, pady=(0, 20))
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             choices_frame,
-            text="Choose your move:",
-            font=("Arial", 16)
+            text="> CHOOSE YOUR MOVE:",
+            font=self.retro_font_large
         ).pack()
         
         # Choice buttons
         buttons_frame = ctk.CTkFrame(choices_frame, fg_color="transparent")
         buttons_frame.pack(pady=10)
         
+        choice_colors = [self.retro_colors["button"], self.retro_colors["accent"], self.retro_colors["accent2"]]
         for i, choice in enumerate(["rock", "paper", "scissors"]):
-            btn = ctk.CTkButton(
+            btn = self.create_retro_button(
                 buttons_frame,
-                text=choice.capitalize(),
-                font=("Arial", 14, "bold"),
+                text=f"> {choice.upper()}",
+                command=lambda c=choice: self.make_online_choice(Choice(c)),
                 width=120,
                 height=40,
-                command=lambda c=choice: self.make_online_choice(Choice(c))
+                fg_color=choice_colors[i]
             )
             btn.grid(row=0, column=i, padx=10)
         
@@ -878,10 +1042,10 @@ class GameUI(ctk.CTk):
         self.result_frame.grid(row=1, column=0, columnspan=3, sticky="nsew")
         
         # Status label
-        status_label = ctk.CTkLabel(
+        status_label = self.create_retro_label(
             self.result_frame,
-            text="Waiting for opponent's choice...",
-            font=("Arial", 14)
+            text="> WAITING FOR OPPONENT'S CHOICE...",
+            font=self.retro_font
         )
         status_label.pack(pady=20)
     
@@ -909,10 +1073,10 @@ class GameUI(ctk.CTk):
         for widget in self.result_frame.winfo_children():
             widget.destroy()
         
-        status = ctk.CTkLabel(
+        status = self.create_retro_label(
             self.result_frame,
-            text=message,
-            font=("Arial", 14)
+            text=f"> {message.upper()}",
+            font=self.retro_font
         )
         status.pack(pady=20)
     
@@ -937,13 +1101,13 @@ class GameUI(ctk.CTk):
         # Update scores safely
         try:
             if hasattr(self, 'player1_score_label') and self.player1_score_label.winfo_exists():
-                self.player1_score_label.configure(text=f"Score: {self.game.player1_score}")
+                self.player1_score_label.configure(text=f"SCORE: {self.game.player1_score}")
         except Exception:
             pass
 
         try:
             if hasattr(self, 'player2_score_label') and self.player2_score_label.winfo_exists():
-                self.player2_score_label.configure(text=f"Score: {self.game.player2_score}")
+                self.player2_score_label.configure(text=f"SCORE: {self.game.player2_score}")
         except Exception:
             pass
 
@@ -960,29 +1124,28 @@ class GameUI(ctk.CTk):
                     widget.destroy()
 
                 # Show choices
-                choices_text = f"Your move: {self.game.player1_choice.value.upper()} | Opponent: {self.game.player2_choice.value.upper()}"
-                choices_label = ctk.CTkLabel(
+                choices_text = f"YOUR MOVE: {self.game.player1_choice.value.upper()} | OPPONENT: {self.game.player2_choice.value.upper()}"
+                choices_label = self.create_retro_label(
                     self.result_frame,
-                    text=choices_text,
-                    font=("Arial", 14)
+                    text=f"> {choices_text}",
+                    font=self.retro_font
                 )
                 choices_label.pack(pady=10)
 
                 # Show result
-                result_label = ctk.CTkLabel(
+                result_label = self.create_retro_label(
                     self.result_frame,
-                    text=message,
-                    font=("Arial", 18, "bold"),
-                    text_color="#FFD700"
+                    text=f">>> {message.upper()} <<<",
+                    font=self.retro_font_large,
+                    text_color=self.retro_colors["accent"]
                 )
                 result_label.pack(pady=10)
 
                 # Next round button
-                next_btn = ctk.CTkButton(
+                next_btn = self.create_retro_button(
                     self.result_frame,
-                    text="Next Round",
-                    font=("Arial", 14),
-                    command=self.show_online_game_screen
+                    text="> NEXT ROUND",
+                    command=lambda: [self.play_sound("click"), self.show_online_game_screen()]
                 )
                 next_btn.pack(pady=10)
         except Exception:
@@ -1028,7 +1191,13 @@ class GameUI(ctk.CTk):
         self.current_frame.grid_rowconfigure(1, weight=1)
         
         # Header with scores
-        header = ctk.CTkFrame(self.current_frame, height=60)
+        header = ctk.CTkFrame(
+            self.current_frame,
+            height=60,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         header.grid(row=0, column=0, sticky="ew", pady=(0, 20))
         header.grid_columnconfigure((0, 1, 2), weight=1)
         
@@ -1036,16 +1205,16 @@ class GameUI(ctk.CTk):
         player1_frame = ctk.CTkFrame(header, fg_color="transparent")
         player1_frame.grid(row=0, column=0, sticky="w", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player1_frame,
-            text=self.game.player1_name,
-            font=("Arial", 16, "bold")
+            text=f"> {self.game.player1_name.upper()}",
+            font=self.retro_font
         ).pack()
         
-        self.player1_score_label = ctk.CTkLabel(
+        self.player1_score_label = self.create_retro_label(
             player1_frame,
-            text=f"Score: {self.game.player1_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player1_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player1_score_label.pack()
         
@@ -1053,10 +1222,11 @@ class GameUI(ctk.CTk):
         round_frame = ctk.CTkFrame(header, fg_color="transparent")
         round_frame.grid(row=0, column=1)
         
-        self.round_label = ctk.CTkLabel(
+        self.round_label = self.create_retro_label(
             round_frame,
-            text=f"Round {self.game.round}",
-            font=("Arial", 18, "bold")
+            text=f">>> ROUND {self.game.round} <<<",
+            font=self.retro_font_large,
+            text_color=self.retro_colors["accent"]
         )
         self.round_label.pack()
         
@@ -1064,21 +1234,26 @@ class GameUI(ctk.CTk):
         player2_frame = ctk.CTkFrame(header, fg_color="transparent")
         player2_frame.grid(row=0, column=2, sticky="e", padx=20)
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             player2_frame,
-            text=self.game.player2_name,
-            font=("Arial", 16, "bold")
+            text=f"{self.game.player2_name.upper()} <",
+            font=self.retro_font
         ).pack()
         
-        self.player2_score_label = ctk.CTkLabel(
+        self.player2_score_label = self.create_retro_label(
             player2_frame,
-            text=f"Score: {self.game.player2_score}",
-            font=("Arial", 14)
+            text=f"SCORE: {self.game.player2_score}",
+            text_color=self.retro_colors["text_secondary"]
         )
         self.player2_score_label.pack()
         
         # Game area
-        game_area = ctk.CTkFrame(self.current_frame)
+        game_area = ctk.CTkFrame(
+            self.current_frame,
+            fg_color=self.retro_colors["frame"],
+            border_color=self.retro_colors["border"],
+            border_width=2
+        )
         game_area.grid(row=1, column=0, sticky="nsew")
         game_area.grid_columnconfigure((0, 1, 2), weight=1)
         game_area.grid_rowconfigure(1, weight=1)
@@ -1087,24 +1262,25 @@ class GameUI(ctk.CTk):
         choices_frame = ctk.CTkFrame(game_area, fg_color="transparent")
         choices_frame.grid(row=0, column=0, columnspan=3, pady=(0, 20))
         
-        ctk.CTkLabel(
+        self.create_retro_label(
             choices_frame,
-            text="Choose your move:",
-            font=("Arial", 16)
+            text="> CHOOSE YOUR MOVE:",
+            font=self.retro_font_large
         ).pack()
         
         # Choice buttons
         buttons_frame = ctk.CTkFrame(choices_frame, fg_color="transparent")
         buttons_frame.pack(pady=10)
         
+        choice_colors = [self.retro_colors["button"], self.retro_colors["accent"], self.retro_colors["accent2"]]
         for i, choice in enumerate(["rock", "paper", "scissors"]):
-            btn = ctk.CTkButton(
+            btn = self.create_retro_button(
                 buttons_frame,
-                text=choice.capitalize(),
-                font=("Arial", 14, "bold"),
+                text=f"> {choice.upper()}",
+                command=lambda c=choice: self.make_choice(Choice(c)),
                 width=120,
                 height=40,
-                command=lambda c=choice: self.make_choice(Choice(c))
+                fg_color=choice_colors[i]
             )
             btn.grid(row=0, column=i, padx=10)
         
@@ -1116,23 +1292,21 @@ class GameUI(ctk.CTk):
         buttons_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")
         buttons_frame.grid(row=2, column=0, pady=(20, 0))
         
-        restart_btn = ctk.CTkButton(
+        restart_btn = self.create_retro_button(
             buttons_frame,
-            text="Restart",
-            font=("Arial", 14),
+            text="> RESTART",
+            command=self.restart_game,
             width=120,
-            height=40,
-            command=self.restart_game
+            height=40
         )
         restart_btn.pack(side="left", padx=10)
         
-        menu_btn = ctk.CTkButton(
+        menu_btn = self.create_retro_button(
             buttons_frame,
-            text="Main Menu",
-            font=("Arial", 14),
+            text="> MAIN MENU",
+            command=lambda: [self.play_sound("click"), self.show_main_menu()],
             width=120,
-            height=40,
-            command=self.show_main_menu
+            height=40
         )
         menu_btn.pack(side="left", padx=10)
         
@@ -1165,13 +1339,13 @@ class GameUI(ctk.CTk):
         # Update scores safely (widgets may have been destroyed)
         try:
             if hasattr(self, 'player1_score_label') and self.player1_score_label.winfo_exists():
-                self.player1_score_label.configure(text=f"Score: {self.game.player1_score}")
+                self.player1_score_label.configure(text=f"SCORE: {self.game.player1_score}")
         except Exception:
             pass
 
         try:
             if hasattr(self, 'player2_score_label') and self.player2_score_label.winfo_exists():
-                self.player2_score_label.configure(text=f"Score: {self.game.player2_score}")
+                self.player2_score_label.configure(text=f"SCORE: {self.game.player2_score}")
         except Exception:
             pass
 
@@ -1187,10 +1361,11 @@ class GameUI(ctk.CTk):
                 for widget in self.result_frame.winfo_children():
                     widget.destroy()
 
-                result_label = ctk.CTkLabel(
+                result_label = self.create_retro_label(
                     self.result_frame,
-                    text=message,
-                    font=("Arial", 18, "bold")
+                    text=f">>> {message.upper()} <<<",
+                    font=self.retro_font_large,
+                    text_color=self.retro_colors["accent"]
                 )
                 result_label.pack(pady=20)
         except Exception:
