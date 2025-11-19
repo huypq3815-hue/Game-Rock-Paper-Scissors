@@ -2,7 +2,7 @@ import random
 import json
 import os
 from enum import Enum
-from typing import Optional, Tuple, Dict, List
+from typing import Optional, Tuple, Dict, List, Callable
 
 class Choice(Enum):
     ROCK = "rock"
@@ -32,8 +32,16 @@ class RockPaperScissorsGame:
         self.player1_choice: Optional[Choice] = None
         self.player2_choice: Optional[Choice] = None
         self.history_file = "game_history.json"
+
+        # Event callbacks
+        self.on_round_end: Optional[Callable[[Dict], None]] = None
+        self.on_game_end: Optional[Callable[[Dict], None]] = None
+
         self.load_history()
 
+    # -------------------------------
+    # Game configuration
+    # -------------------------------
     def set_player_names(self, player1: str, player2: str = "AI"):
         self.player1_name = player1
         self.player2_name = player2
@@ -43,32 +51,44 @@ class RockPaperScissorsGame:
         if mode == GameMode.AI_VS_AI:
             self.player2_name = "AI 2"
 
+    # -------------------------------
+    # Choices
+    # -------------------------------
     def get_choices(self) -> List[str]:
         return [choice.value for choice in Choice]
 
     def make_ai_choice(self) -> Choice:
-        # Simple random choice for now
         return random.choice(list(Choice))
 
+    # -------------------------------
+    # Play rounds
+    # -------------------------------
     def play_round(self, choice1: Optional[Choice] = None, choice2: Optional[Choice] = None) -> Tuple[GameResult, str]:
         if self.game_mode == GameMode.VS_AI:
+            if choice1 is None:
+                return GameResult.DRAW, "Player choice missing"
             self.player1_choice = choice1
             self.player2_choice = self.make_ai_choice()
+
         elif self.game_mode == GameMode.AI_VS_AI:
             self.player1_choice = self.make_ai_choice()
             self.player2_choice = self.make_ai_choice()
-        else:  # VS_PLAYER
-            if choice1 and choice2:
-                self.player1_choice = choice1
-                self.player2_choice = choice2
-            else:
+
+        elif self.game_mode in [GameMode.VS_PLAYER, GameMode.VS_LOCAL_PLAYER]:
+            if choice1 is None or choice2 is None:
                 return GameResult.DRAW, "Waiting for both players"
+            self.player1_choice = choice1
+            self.player2_choice = choice2
 
         result = self.determine_winner()
         self.update_scores(result)
-        self.save_round(result)
+        round_data = self.save_round(result)
         self.round += 1
-        
+
+        # Trigger round callback
+        if self.on_round_end:
+            self.on_round_end(round_data)
+
         return result, self.get_result_message(result)
 
     def determine_winner(self) -> GameResult:
@@ -77,13 +97,12 @@ class RockPaperScissorsGame:
 
         if self.player1_choice == self.player2_choice:
             return GameResult.DRAW
-        
+
         win_conditions = {
             Choice.ROCK: Choice.SCISSORS,
             Choice.PAPER: Choice.ROCK,
             Choice.SCISSORS: Choice.PAPER
         }
-        
         return GameResult.WIN if win_conditions[self.player1_choice] == self.player2_choice else GameResult.LOSE
 
     def update_scores(self, result: GameResult):
@@ -95,11 +114,13 @@ class RockPaperScissorsGame:
     def get_result_message(self, result: GameResult) -> str:
         if result == GameResult.DRAW:
             return "It's a draw!"
-        
         winner = self.player1_name if result == GameResult.WIN else self.player2_name
         return f"{winner} wins! {self.player1_choice.value.capitalize()} beats {self.player2_choice.value}."
 
-    def save_round(self, result: GameResult):
+    # -------------------------------
+    # History
+    # -------------------------------
+    def save_round(self, result: GameResult) -> Dict:
         round_data = {
             "round": self.round,
             "player1": {
@@ -116,6 +137,7 @@ class RockPaperScissorsGame:
         }
         self.history.append(round_data)
         self.save_history()
+        return round_data
 
     def save_history(self):
         try:
@@ -133,19 +155,24 @@ class RockPaperScissorsGame:
             print(f"Error loading history: {e}")
             self.history = []
 
-    def reset_game(self):
+    # -------------------------------
+    # Reset / Stats
+    # -------------------------------
+    def reset_game(self, keep_history: bool = True):
         self.player1_score = 0
         self.player2_score = 0
         self.round = 1
         self.player1_choice = None
         self.player2_choice = None
+        if not keep_history:
+            self.history = []
+            self.save_history()
 
     def get_stats(self) -> Dict:
         total_games = len(self.history)
         wins = sum(1 for game in self.history if game["result"] == GameResult.WIN.value)
         losses = sum(1 for game in self.history if game["result"] == GameResult.LOSE.value)
         draws = total_games - wins - losses
-        
         return {
             "total_games": total_games,
             "wins": wins,
