@@ -1048,6 +1048,16 @@ class GameUI(ctk.CTk):
         # Result display
         self.result_frame = ctk.CTkFrame(game_area, fg_color="transparent")
         self.result_frame.grid(row=1, column=0, columnspan=3, sticky="nsew")
+        # ==== IMAGE DISPLAY AREA ====
+        self.image_frame = ctk.CTkFrame(game_area, fg_color="transparent")
+        self.image_frame.grid(row=2, column=0, columnspan=3, pady=10)
+
+        self.player_image_label = ctk.CTkLabel(self.image_frame, text="")
+        self.player_image_label.pack(side="left", padx=40)
+
+        self.ai_image_label = ctk.CTkLabel(self.image_frame, text="")
+        self.ai_image_label.pack(side="right", padx=40)
+
         
         # Status label
         status_label = self.create_retro_label(
@@ -1295,6 +1305,16 @@ class GameUI(ctk.CTk):
         # Result display
         self.result_frame = ctk.CTkFrame(game_area, fg_color="transparent")
         self.result_frame.grid(row=1, column=0, columnspan=3, sticky="nsew")
+        # ==== IMAGE DISPLAY AREA ====
+        self.image_frame = ctk.CTkFrame(game_area, fg_color="transparent")
+        self.image_frame.grid(row=2, column=0, columnspan=3, pady=10)
+
+        self.player_image_label = ctk.CTkLabel(self.image_frame, text="")
+        self.player_image_label.pack(side="left", padx=40)
+
+        self.ai_image_label = ctk.CTkLabel(self.image_frame, text="")
+        self.ai_image_label.pack(side="right", padx=40)
+
         
         # Action buttons
         buttons_frame = ctk.CTkFrame(self.current_frame, fg_color="transparent")

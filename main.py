@@ -7,22 +7,37 @@ from src.ui import GameUI
 
 def main():
     # Initialize pygame for sound
-    pygame.mixer.init()
-    
-    # Set up the application
-    ctk.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
-    ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
-    
-    # Create the game instance
+    try:
+        pygame.mixer.init()
+    except Exception as e:
+        print("⚠️ Lỗi âm thanh pygame:", e)
+
+    # ================================
+    # CustomTkinter UI Settings
+    # ================================
+    ctk.set_appearance_mode("dark")  
+    ctk.set_default_color_theme("blue")
+
+    # ================================
+    # Create Game Logic
+    # ================================
     game = RockPaperScissorsGame()
-    
-    # Create and run the UI
+
+    # ================================
+    # Start UI
+    # ================================
     app = GameUI(game)
     app.mainloop()
 
+
 if __name__ == "__main__":
-    # Create necessary directories
+    # ================================
+    # Ensure assets folders exist
+    # ================================
     os.makedirs("assets/images", exist_ok=True)
     os.makedirs("assets/sounds", exist_ok=True)
-    
+
+    # ================================
+    # Run Program
+    # ================================
     main()

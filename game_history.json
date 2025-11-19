@@ -1986,5 +1986,159 @@
       "score": 2
     },
     "result": "win"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 2
+    },
+    "result": "lose"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "win"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 2
+    },
+    "result": "draw"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "Player 2",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
   }
 ]
