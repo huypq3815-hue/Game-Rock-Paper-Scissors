@@ -188,7 +188,7 @@ class GameUI(ctk.CTk):
         )
     
     def create_retro_button(self, parent, text, command, fg_color=None, hover_color=None, 
-                           text_color="#000000", border_color=None, **kwargs):
+                           text_color="#000000", border_color=None, font=None, **kwargs):
         """Create a retro-styled button"""
         if fg_color is None:
             fg_color = self.retro_colors["button"]
@@ -196,10 +196,18 @@ class GameUI(ctk.CTk):
             hover_color = self.retro_colors["button_hover"]
         if border_color is None:
             border_color = self.retro_colors["border"]
+        # Respect an explicit font when provided, otherwise use the default retro font
+        if font is None:
+            font = self.retro_font
+
+        # Ensure we don't pass a duplicate 'font' in kwargs
+        if 'font' in kwargs:
+            kwargs.pop('font')
+
         return ctk.CTkButton(
             parent,
             text=text,
-            font=self.retro_font,
+            font=font,
             fg_color=fg_color,
             hover_color=hover_color,
             text_color=text_color,

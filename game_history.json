@@ -908,5 +908,1083 @@
       "score": 8
     },
     "result": "draw"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 0
+    },
+    "result": "draw"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 5,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 1
+    },
+    "result": "win"
+  },
+  {
+    "round": 6,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 7,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 2
+    },
+    "result": "lose"
+  },
+  {
+    "round": 8,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 3
+    },
+    "result": "lose"
+  },
+  {
+    "round": 9,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "lose"
+  },
+  {
+    "round": 10,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 11,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 12,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 13,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 14,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 15,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 16,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 17,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 5
+    },
+    "result": "lose"
+  },
+  {
+    "round": 18,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 5
+    },
+    "result": "draw"
+  },
+  {
+    "round": 19,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 6
+    },
+    "result": "lose"
+  },
+  {
+    "round": 20,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 6
+    },
+    "result": "draw"
+  },
+  {
+    "round": 21,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 6
+    },
+    "result": "draw"
+  },
+  {
+    "round": 22,
+    "player1": {
+      "name": "Player 1",
+      "choice": "scissors",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 7
+    },
+    "result": "lose"
+  },
+  {
+    "round": 23,
+    "player1": {
+      "name": "Player 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 8
+    },
+    "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "win"
+  },
+  {
+    "round": 5,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 6,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 7,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 8,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 2
+    },
+    "result": "lose"
+  },
+  {
+    "round": 9,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 4
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "win"
+  },
+  {
+    "round": 10,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 4
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 3
+    },
+    "result": "lose"
+  },
+  {
+    "round": 11,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 5
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 3
+    },
+    "result": "win"
+  },
+  {
+    "round": 12,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 5
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 3
+    },
+    "result": "draw"
+  },
+  {
+    "round": 13,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 5
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "lose"
+  },
+  {
+    "round": 14,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 6
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 15,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 7
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 16,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 8
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 17,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 9
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 18,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 10
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 4
+    },
+    "result": "win"
+  },
+  {
+    "round": 19,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 10
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 4
+    },
+    "result": "draw"
+  },
+  {
+    "round": 20,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 10
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 5
+    },
+    "result": "lose"
+  },
+  {
+    "round": 21,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 11
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 5
+    },
+    "result": "win"
+  },
+  {
+    "round": 22,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 11
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 6
+    },
+    "result": "lose"
+  },
+  {
+    "round": 23,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 11
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 7
+    },
+    "result": "lose"
+  },
+  {
+    "round": 24,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 12
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 7
+    },
+    "result": "win"
+  },
+  {
+    "round": 25,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 13
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 7
+    },
+    "result": "win"
+  },
+  {
+    "round": 26,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 13
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 7
+    },
+    "result": "draw"
+  },
+  {
+    "round": 27,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 13
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 8
+    },
+    "result": "lose"
+  },
+  {
+    "round": 28,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 13
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 9
+    },
+    "result": "lose"
+  },
+  {
+    "round": 29,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 9
+    },
+    "result": "win"
+  },
+  {
+    "round": 30,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 9
+    },
+    "result": "draw"
+  },
+  {
+    "round": 31,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 9
+    },
+    "result": "draw"
+  },
+  {
+    "round": 32,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 9
+    },
+    "result": "draw"
+  },
+  {
+    "round": 33,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 9
+    },
+    "result": "draw"
+  },
+  {
+    "round": 34,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 10
+    },
+    "result": "lose"
+  },
+  {
+    "round": 35,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 14
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 10
+    },
+    "result": "draw"
+  },
+  {
+    "round": 36,
+    "player1": {
+      "name": "Pam",
+      "choice": "rock",
+      "score": 15
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 10
+    },
+    "result": "win"
+  },
+  {
+    "round": 37,
+    "player1": {
+      "name": "Pam",
+      "choice": "paper",
+      "score": 15
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 10
+    },
+    "result": "draw"
+  },
+  {
+    "round": 38,
+    "player1": {
+      "name": "Pam",
+      "choice": "scissors",
+      "score": 15
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 10
+    },
+    "result": "draw"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "paper",
+      "score": 0
+    },
+    "result": "win"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "AI 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "AI 1",
+      "choice": "rock",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "win"
+  },
+  {
+    "round": 5,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 2
+    },
+    "result": "lose"
+  },
+  {
+    "round": 6,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "win"
+  },
+  {
+    "round": 7,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 3
+    },
+    "result": "lose"
+  },
+  {
+    "round": 8,
+    "player1": {
+      "name": "AI 1",
+      "choice": "rock",
+      "score": 3
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "paper",
+      "score": 4
+    },
+    "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 1
+    },
+    "result": "lose"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 3,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "scissors",
+      "score": 1
+    },
+    "result": "draw"
+  },
+  {
+    "round": 4,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 1
+    },
+    "result": "win"
+  },
+  {
+    "round": 5,
+    "player1": {
+      "name": "AI 1",
+      "choice": "scissors",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "lose"
+  },
+  {
+    "round": 6,
+    "player1": {
+      "name": "AI 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "draw"
+  },
+  {
+    "round": 7,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "paper",
+      "score": 2
+    },
+    "result": "draw"
+  },
+  {
+    "round": 8,
+    "player1": {
+      "name": "AI 1",
+      "choice": "paper",
+      "score": 2
+    },
+    "player2": {
+      "name": "AI 2",
+      "choice": "rock",
+      "score": 2
+    },
+    "result": "win"
   }
 ]
