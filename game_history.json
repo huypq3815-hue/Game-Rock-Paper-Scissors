@@ -2168,5 +2168,19 @@
       "score": 1
     },
     "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 1
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "scissors",
+      "score": 0
+    },
+    "result": "win"
   }
 ]
