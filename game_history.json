@@ -2140,5 +2140,33 @@
       "score": 1
     },
     "result": "lose"
+  },
+  {
+    "round": 1,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "rock",
+      "score": 0
+    },
+    "result": "draw"
+  },
+  {
+    "round": 2,
+    "player1": {
+      "name": "Player 1",
+      "choice": "rock",
+      "score": 0
+    },
+    "player2": {
+      "name": "AI",
+      "choice": "paper",
+      "score": 1
+    },
+    "result": "lose"
   }
 ]
